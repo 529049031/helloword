@@ -1,0 +1,117 @@
+		*,html,body{
+			font-size: 12px;
+			font-family: "Microsoft YaHei",tahoma,arial,"Hiragino Sans GB","\5b8b\4f53",sans-serif;
+		}
+		li:hover{
+			cursor:pointer;
+		}
+		.icon-remove:before{
+			cursor:pointer;
+		}
+		.icon-pencil:before{
+			cursor:pointer;
+		}
+		span:hover{
+		cursor:pointer;
+		text-decoration:none;
+		}
+		span:link{
+		text-decoration:none;
+		}
+		span:visited{
+		text-decoration:none;
+		}
+		span:active{
+		text-decoration:none;
+		}
+		a:hover{
+		cursor:pointer;
+		text-decoration:none;
+		}
+		a:link{
+		text-decoration:none;
+		}
+		a:visited{
+		text-decoration:none;
+		}
+		a:active{
+		text-decoration:none;
+		}
+		.add_send{
+			width: 500px;
+			height: 35px;
+		}
+		.addimg{
+			width: 10%;
+			margin-top: -4px;
+			margin-left: 20px;
+		}
+		.addfont{
+			color: #FFF;
+			height: 32px;
+			line-height: 32px;
+		}
+		.add{
+			width: 120px;
+			height: 32px;
+			background-color: #44b549;
+			border-radius:3px !important;
+		}
+		.send{
+			margin-top: -32px;
+			margin-left: 140px;
+			width: 120px;
+			height: 32px;
+			line-height: 32px;
+			border: 1px solid #f1f1f3;
+			text-align: center;
+			border-radius:3px !important;
+		}
+		.sendfa{
+			color: #000;
+		}
+		select{
+			margin: auto;
+			width: 90px;
+			color: #999999;
+			background: #f4f8fd;
+			border: none;
+		}
+		select option{
+			background: #FFF;
+		}
+		.row-fluid .span12{
+			margin-left: 0px;
+		}
+		/*table{
+			margin-left:0px ;
+			margin-top: 10px;
+			max-width: 1920px;
+			min-width: 784px;
+		}*/
+		#dataTables-example{
+			:0px ;
+			margin-top: 10px;
+			max-width: 1920px;
+			min-width: 784px;
+		}
+		tr{
+			height: 40px;
+		}
+		td{
+			border:solid #d9dadc 1px ;
+			/*min-width: 50px;*/
+		}
+		input::-webkit-input-placeholder, textarea::-webkit-input-placeholder { 
+		font-size: 12px;
+		} 
+		input:-moz-placeholder, textarea:-moz-placeholder { 
+		font-size: 12px;
+		} 
+		input::-moz-placeholder, textarea::-moz-placeholder { 
+		font-size: 12px;
+		} 
+		input:-ms-input-placeholder, textarea:-ms-input-placeholder { 
+		font-size: 12px;
+		} 
+
