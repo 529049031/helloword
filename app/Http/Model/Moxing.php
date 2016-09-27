@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class Moxing extends Model
 {
     protected $table = 'collection';
-    public $timestamps =  'false';
+    public $timestamps =  false;
 }

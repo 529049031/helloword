@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link rel="stylesheet" href="{{asset('resources/views/admin/style/css/ch-ui.admin.css')}}">
     <link rel="stylesheet" href="{{asset('resources/views/admin/style/font/css/font-awesome.min.css')}}">
     <script type="text/javascript" src="{{asset('resources/views/admin/style/js/jquery.js')}}"></script>
@@ -20,6 +19,8 @@
     <script type="text/javascript" charset="utf-8" src="{{asset('public/umeditor/umeditor.min.js')}}"></script>
     <script type="text/javascript" src="{{asset('public/umeditor/umeditor.config.js')}}"></script>
     <link href="{{asset('public/umeditor/themes/default/css/umeditor.min.css')}}" type="text/css" rel="stylesheet">
+    <script src="{{asset('resources/org/jquery.ajaxUpload.js')}}"></script>
+    <script src="{{asset('resources/org/upload.js')}}"></script>
     <style>
         .main_div {
             display: block;
@@ -122,6 +123,7 @@
             width: 100px;
             height: 90px;
             background-image: url({{asset('resources/views/admin/img/upload.png')}});
+            overflow: hidden;
             /*background-color: #000;*/
         }
 
@@ -184,7 +186,14 @@
             /*display: none;*/
         }
 
+        .tp1 {
+            position: absolute;
+            max-width: 100px;
+        }
 
+        .lb {
+            width: 350px;
+        }
     </style>
 </head>
 <body>
@@ -194,10 +203,12 @@
     </div>
 
     <div class="main_main_div">
+        <input type="hidden" name="method" value="{{$tag or 'add'}}"/>
+        <input type="hidden" id="coll_id" name="id" value="@if($data){{$data[0]->coll_id or ''}}@endif">
         <ul>
             <li>商品名称：</li>
             <li>
-                <input type="text"/>
+                <input type="text" name="s-name" value="@if($data){{$data[0]->name or '请输入商品名称'}}@endif"/>
             </li>
         </ul>
 
@@ -207,28 +218,19 @@
                 上传图片，作为商品封面图片。
             </li>
         </ul>
-        <form method="POST" action="{{url('admin/upload')}}" enctype="muitipart/form-data">
-                {{csrf_field()}}
-                <input type="file" name="myfile" value=""/>
-
-                <input type="submit" name="submit" value="Submit" />
-
-            </form>
         <ul class="upload_img_ul">
             <li>
                 <div class="uploader_img">
                     <div class="img_fileupload">
-                        <img src="" id="tp1" class="tp1" alt="">
+                        <img src="@if($data){{$data[0]->fm_img or ''}}@endif" class="tp1 fm_img" class="tp1" alt="">
 
                         <div class="img_del_div1 img_div">
-
-
-                            <a onclick="ycdel1()">
+                            <a onclick="del($(this))">
                                 <img src="{{asset('resources/views/admin/img/delete.png')}}" class="img_del" alt="">
                             </a>
                         </div>
                     </div>
-                    <input id="sc1" class=""  type="file" onchange="sc1()"/>
+                    <input id="btn6" class="" type="file"/>
                 </div>
             </li>
         </ul>
@@ -238,86 +240,107 @@
                 上传图片，作为商品展示轮播图。最少一张，最多6张
             </li>
         </ul>
-        <ul class="upload_img_ul">
+        <ul class="upload_img_ul lb">
             <li>
                 <div class="uploader_img">
                     <div class="img_fileupload">
+                        <img src="@if($data){{$data[0]->lb_img[0] or asset('resources/views/admin/img/upload.png')}}@endif"
+                             class="tp1 lb_img" class="tp1" alt="">
 
                         <div class="img_del_div2 img_div">
-                            <a onclick="ycdel2()">
-                                <img src="{{asset('resources/views/admin/img/delete.png')}}" class="img_del" alt="">
+                            <a onclick="del($(this))">
+                                <img src="{{asset('resources/views/admin/img/delete.png')}}" class="img_del"
+                                     alt="">
                             </a>
                         </div>
                     </div>
-                    <input id="" class="" type="file"/>
-                    {{--<img src="" id="tp2" class="tp2" alt="">--}}
-                </div>
-
-                <div class="uploader_img">
-                    <div class="img_fileupload">
-                        <div class="img_del_div3 img_div">
-                            <a onclick="ycdel3()"><img src="{{asset('resources/views/admin/img/delete.png')}}"
-                                                       class="img_del" alt=""></a>
-                        </div>
-                    </div>
-                    <input class="" type="file"/>
-                </div>
-
-
-            </li>
-            <li>
-                <div class="uploader_img">
-                    <div class="img_fileupload">
-                        <div class="img_del_div4 img_div">
-                            <a onclick="ycdel4()"><img src="{{asset('resources/views/admin/img/delete.png')}}"
-                                                       class="img_del" alt=""></a>
-                        </div>
-                    </div>
-                    <input class="" type="file"/>
-                </div>
-
-                <div class="uploader_img">
-                    <div class="img_fileupload">
-                        <div class="img_del_div5 img_div">
-                            <a onclick="ycdel5()"><img src="{{asset('resources/views/admin/img/delete.png')}}"
-                                                       class="img_del" alt=""></a>
-                        </div>
-                    </div>
-                    <input class="" type="file"/>
+                    <input id="btn0" class="" type="file"/>
                 </div>
             </li>
             <li>
                 <div class="uploader_img">
                     <div class="img_fileupload">
-                        <div class="img_del_div6 img_div">
-                            <a onclick="ycdel6()"><img src="{{asset('resources/views/admin/img/delete.png')}}"
-                                                       class="img_del" alt=""></a>
+                        <img src="@if($data){{$data[0]->lb_img[1] or asset('resources/views/admin/img/upload.png')}}@endif"
+                             class="tp1 lb_img" class="tp1" alt="">
+
+                        <div class="img_del_div2 img_div">
+                            <a onclick="del($(this))">
+                                <img src="{{asset('resources/views/admin/img/delete.png')}}" class="img_del"
+                                     alt="">
+                            </a>
                         </div>
                     </div>
-                    <input class="" type="file"/>
+                    <input id="btn1" class="" type="file"/>
                 </div>
-
+            </li>
+            <li>
                 <div class="uploader_img">
                     <div class="img_fileupload">
-                        <div class="img_del_div7 img_div">
-                            <a onclick="ycdel7()"><img src="{{asset('resources/views/admin/img/delete.png')}}"
-                                                       class="img_del" alt=""></a>
+
+                        <img src="@if($data){{$data[0]->lb_img[2] or asset('resources/views/admin/img/upload.png')}}@endif" class="tp1 lb_img" class="tp1" alt="">
+
+                        <div class="img_del_div2 img_div">
+                            <a onclick="del($(this))">
+                                <img src="{{asset('resources/views/admin/img/delete.png')}}" class="img_del"
+                                     alt="">
+                            </a>
                         </div>
                     </div>
-                    <input class="" type="file"/>
+                    <input id="btn2" class="" type="file"/>
                 </div>
-
             </li>
-            <!--<li>
-                上传图片，作为商品展示轮播图。最少一张，最多6张
-            </li>-->
+            <li>
+                <div class="uploader_img">
+                    <div class="img_fileupload">
+                        <img src="@if($data){{$data[0]->lb_img[3] or asset('resources/views/admin/img/upload.png')}}@endif" class="tp1 lb_img" class="tp1" alt="">
+
+                        <div class="img_del_div2 img_div">
+                            <a onclick="del($(this))">
+                                <img src="{{asset('resources/views/admin/img/delete.png')}}" class="img_del"
+                                     alt="">
+                            </a>
+                        </div>
+                    </div>
+                    <input id="btn3" class="" type="file"/>
+                </div>
+            </li>
+            <li>
+                <div class="uploader_img">
+                    <div class="img_fileupload">
+                        <img src="@if($data){{$data[0]->lb_img[4] or asset('resources/views/admin/img/upload.png')}}@endif" class="tp1 lb_img" class="tp1" alt="">
+
+                        <div class="img_del_div2 img_div">
+                            <a onclick="del($(this))">
+                                <img src="{{asset('resources/views/admin/img/delete.png')}}" class="img_del"
+                                     alt="">
+                            </a>
+                        </div>
+                    </div>
+                    <input id="btn4" class="" type="file"/>
+                </div>
+            </li>
+            <li>
+                <div class="uploader_img">
+                    <div class="img_fileupload">
+                        <img src="@if($data){{$data[0]->lb_img[5] or asset('resources/views/admin/img/upload.png')}}@endif" class="tp1 lb_img" class="tp1" alt="">
+
+                        <div class="img_del_div2 img_div">
+                            <a onclick="del($(this))">
+                                <img src="{{asset('resources/views/admin/img/delete.png')}}" class="img_del"
+                                     alt="">
+                            </a>
+                        </div>
+                    </div>
+                    <input id="btn5" class="" type="file"/>
+                </div>
+            </li>
         </ul>
 
         <ul>
             <li>商品详情：</li>
             <li>
-                <script type="text/plain" id="myEditor" style="width:98%;height:240px;"><p>内容区域</p></script>
-
+                <script type="text/plain" id="myEditor"
+                        style="width:98%;height:240px;">@if($data){!! $data[0]->content !!}@endif</script>
             </li>
         </ul>
 
@@ -325,10 +348,12 @@
             <li>商品状态：</li>
             <li>
                 <label for="radiobutton1">
-                    <input type="radio" name="radiobutton" id="radiobutton1" value="radiobutton"/>上架
+                    <input type="radio" name="radiobutton" id="radiobutton1"
+                           value="0" @if($data){{$data[0]->status == 0 ? 'checked' :''}}@else{{'checked'}}@endif/>上架
                 </label>
                 <label for="radiobutton2">
-                    <input type="radio" name="radiobutton" id="radiobutton2" value="radiobutton"/>下架
+                    <input type="radio" name="radiobutton" id="radiobutton2"
+                           value="1" @if($data){{$data[0]->status == 1 ? 'checked' :''}}@endif/>下架
                 </label>
 
                 <!--<input type="radio" name="spzt" class="input_radio" /><span class="radio_text">上架</span>
@@ -346,63 +371,118 @@
         </a>
 
         <a>
-            <div class="main_main_end_ok main_main_end_btn" onclick="tj()">
+            <div id="true_btn" class="main_main_end_ok main_main_end_btn">
                 确定
             </div>
         </a>
     </div>
 </div>
 </body>
-<script src="{{asset('resources/views/admin/js/jquery.uploadify.min.js')}}"></script>
+<script src="{{asset('resources/org/layer/layer.js')}}"></script>
 <script>
-    function sc1(){
-        var str=$("#sc1").val();
-        var arr=str.split('\\');//注split可以用字符或字符串分割
-        var my=arr[arr.length-1];//这就是要取得的图片名称
-        $.ajax({
-            type: "POST",
-            url: "{{asset('admin/upload')}}",
-            data: {"str":str,},
-            dataType: "json",
-            headers: {
-                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-             },
-        });
-    }
-
-
     var um = UM.getEditor('myEditor');
     function getContent() {
         var cont = UM.getEditor('myEditor').getContent();
     }
-    function tj() {
-
-    }
-
-    function gb() {
-    }
-    function ycdel1() {
-        $(".img_del_div1").hide();
-    }
 
 
-    function ycdel2() {
-        $(".img_del_div2").hide();
+    for (var i = 0; i <= 6; i++) {
+        uploadFile('btn' + i, '{{csrf_token()}}')
     }
-    function ycdel3() {
-        $(".img_del_div3").hide();
+
+    //删除图片
+    function del(obj) {
+        var img = obj.parent().prev().attr('src');
+        $.ajax({
+            url: "{{url('admin/del')}}",
+            type: 'post',
+            dataType: 'JSON',
+            data: {file: img, _token: '{{csrf_token()}}'},
+            success: function (msg) {
+                obj.parent().prev().attr('src', '');
+            }
+        });
     }
-    function ycdel4() {
-        $(".img_del_div4").hide();
-    }
-    function ycdel5() {
-        $(".img_del_div5").hide();
-    }
-    function ycdel6() {
-        $(".img_del_div6").hide();
-    }
-    function ycdel7() {
-        $(".img_del_div7").hide();
-    }
+
+    //提交保存
+    $('#true_btn').on('click', function () {
+        var name, fm_img, lb_img, content, status, lb_img, data = {};
+
+        //此参数决定是否更新或添加
+        data.method = $('input[name=method]').val();
+
+        if (data.method === 'update') {
+            data.id = $('#coll_id').val();
+        }
+
+        //获取商品名称,并判为空不可提交
+        name = $('input[name=s-name]').val();
+        if (!name) {
+            layer.alert('商品名称不可为空!', {icon: 7});
+            return;
+        }
+        data.name = name;
+
+        //封面图片
+        fm_img = $('.fm_img').attr('src');
+        if (!fm_img) {
+            layer.alert('封面图片不可为空!', {icon: 7});
+            return;
+        }
+        data.sources = fm_img;
+
+        //轮播图片
+        for (var i = 0; i < $('.lb_img').length; i++) {
+            if ($(".lb_img")[i].src) {
+                if ($(".lb_img")[i].src !== 'http://jingpai.lyj/admin/add') {
+                    data.sources += '#' + $(".lb_img")[i].src;
+                }
+            }
+        }
+        //商品详情
+        if (!$('#myEditor').text()) {
+            layer.alert('dddd', {'icon': 7});
+            return;
+        }
+        data.content = $('#myEditor').html();
+
+        //商品状态
+        status = $('input[name=radiobutton]:checked').val();
+        if (!status) {
+            layer.alert('商品状态不可为空!', {'icon': 7});
+            return;
+        }
+        data.status = status;
+
+        data._token = '{{csrf_token()}}';
+
+
+        //ajax提交
+        $.ajax({
+            type: 'POST',
+            dataType: 'JSON',
+            data: data,
+            url: '{{url("admin/add")}}',
+            beforeSend: function () {
+                layer.load(1);
+                return;
+            },
+            success: function (msg) {
+                if (msg.status === 0) {
+                    layer.alert(msg.msg, {
+                        'icon': 6,
+                        yes: function (index) {
+                            layer.close(index);
+                            history.go(-1);
+                        }
+                    });
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                layer.alert('网络故障!', {'icon': 5});
+                return;
+            }
+        });
+    });
 </script>
 </html>

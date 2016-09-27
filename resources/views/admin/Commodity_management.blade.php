@@ -118,11 +118,11 @@
 	        	 	<td class="">{{$v->id}}</td>
 					<td class="">{{$v->name}}</td>
 					<td class=" ellipsis">{{$v->introduction}}</td>
-					<td class="">{{$v->status}}</td>
+					<td class="">{{$v->status == 0 ? '已上架' : '已下架'}}</td>
 					<td class="">15210329866</td>
-					<td class="">{{$v->time}}</td>
+					<td class="">{{date('Y-m-d H:i',$v->time)}}</td>
 					<td class="">
-						<a href="{{url("admin/update/$v->id")}}" class=""><i class="fa fa-fw fa-edit" title="修改"></i></a>
+						<a href="{{url("admin/update/$v->coll_id")}}" class=""><i class="fa fa-fw fa-edit" title="修改"></i></a>
 						<a href="{{url("admin/delete?id=$v->id")}}"><i class="fa fa-fw fa-trash-o" title="删除" onclick="open_Del()"></i></a>
 					</td>
 	            </tr>

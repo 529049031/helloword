@@ -49,7 +49,7 @@ Route::group(['prefix'=>'admin','namespace'=>'Admin'], function () {
     //商品修改
     Route::get('update/{id}', 'ReportController@update');
     //商品添加
-    Route::get('add', 'ReportController@add');
+    Route::match(['get','post'],'add', 'ReportController@add');
     //上传图片
     Route::post('upload', 'UploadController@upload');
     //删除图片
