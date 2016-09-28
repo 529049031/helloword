@@ -59,24 +59,11 @@
     <!-- Swiper -->
     <div class="swiper-container">
         <div class="swiper-wrapper">
+			@foreach($data->img as $v)
             <div class="swiper-slide">
-            	<img src="{{asset('resources/views/style/img/001.jpg')}}" class="swiper_img"/>
+            	<img src="{{$v}}" class="swiper_img"/>
             </div>
-            <div class="swiper-slide">
-            	<img src="{{asset('resources/views/style/img/001.jpg')}}" class="swiper_img"/>
-            </div>
-            <div class="swiper-slide">
-            	<img src="{{asset('resources/views/style/img/002.jpg')}}" class="swiper_img"/>
-            </div>
-            <div class="swiper-slide">
-            	<img src="{{asset('resources/views/style/img/001.jpg')}}" class="swiper_img"/>
-            </div>
-            <div class="swiper-slide">
-            	<img src="{{asset('resources/views/style/img/001.jpg')}}" class="swiper_img"/>
-            </div>
-            <div class="swiper-slide">
-            	<img src="{{asset('resources/views/style/img/001.jpg')}}" class="swiper_img"/>
-            </div>
+			@endforeach
         </div>
         
     </div>

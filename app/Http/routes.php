@@ -10,56 +10,56 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-//Ê×Ò³Í¼
-Route::get('/', function () {
-    return view('welcome');
+//å‰å°
+Route::group(['namespace'=>'Home'],function(){
+    //é¦–é¡µ
+    Route::get('/', 'AuctionController@shouye');
+    Route::get('auction/{id}', 'AuctionController@index')->where('id','[0-9]+');
+    //Current_Auction.blade.php
+    Route::get('current', 'AuctionController@current');
+    //æˆ‘çš„ç«æ‹
+    Route::get('my', 'AuctionController@my');
+    //æ”¶è—
+    Route::post('collect', 'AuctionController@collect');
 });
 
-
-/*
- * Ç°Ì¨¾ºÅÄ³ÌĞò
- */
-
-//¾ºÅÄÏêÇé
-Route::get('auction/{id}', 'AuctionController@index');
-//±¾ÆÚ¾ºÅÄ
-Route::get('current', 'AuctionController@current');
-//ÎÒµÄ¾ºÅÄ
-Route::get('my', 'AuctionController@my');
-//µØÖ·Ñ¡Ôñ
+//ï¿½ï¿½Ö·Ñ¡ï¿½ï¿½
 Route::get('address', 'AddressController@index');
-//µØÖ·Ìí¼Ó
+//ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
 Route::get('addressadd', 'AddressController@add');
-//µØÖ·ĞŞ¸Ä
+//ï¿½ï¿½Ö·ï¿½Ş¸ï¿½
 Route::get('addressupdate', 'AddressController@update');
-//¶©µ¥ÏêÇé
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 Route::get('order', 'OrderController@index');
 
 /*
- * ºóÌ¨¹ÜÀíÏµÍ³
+ * ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½ÏµÍ³
  */
 Route::any('admin/login', 'Admin\LoginController@login');
 Route::get('admin/code', 'Admin\LoginController@code');
 
 Route::group(['prefix'=>'admin','namespace'=>'Admin'], function () {
-    //ºóÌ¨Ö÷Ò³ £¨ÉÌÆ·¹ÜÀí£©
+    //ï¿½ï¿½Ì¨ï¿½ï¿½Ò³ ï¿½ï¿½ï¿½ï¿½Æ·ï¿½ï¿½ï¿½ï¿½
     Route::get('index',  'IndexController@index');
-    //ÉÌÆ·¹ÜÀí
+    //ï¿½ï¿½Æ·ï¿½ï¿½ï¿½ï¿½
     Route::get('Report', 'ReportController@index');
-    //ÉÌÆ·ĞŞ¸Ä
+    //ï¿½ï¿½Æ·ï¿½Ş¸ï¿½
     Route::get('update/{id}', 'ReportController@update');
-    //ÉÌÆ·Ìí¼Ó
+    //ï¿½ï¿½Æ·ï¿½ï¿½ï¿½
     Route::match(['get','post'],'add', 'ReportController@add');
-    //ÉÏ´«Í¼Æ¬
+    //å•†å“åˆ é™¤
+    Route::post('delete', 'ReportController@delete');
+    //ï¿½Ï´ï¿½Í¼Æ¬
     Route::post('upload', 'UploadController@upload');
-    //É¾³ıÍ¼Æ¬
+    //É¾ï¿½ï¿½Í¼Æ¬
     Route::post('del', 'UploadController@delFile');
-    //ÖĞ±ê¶©µ¥
+    //ï¿½Ğ±ê¶©ï¿½ï¿½
     Route::get('order', 'OrderController@index');
-    //¾º¼Û±¨±í
+    //ï¿½ï¿½ï¿½Û±ï¿½ï¿½ï¿½
     Route::get('bidding', 'BiddingController@index');
-    //ÏµÍ³ÉèÖÃ
-    Route::get('list', 'ListController@index');
-    //ĞŞ¸ÄÃÜÂë
+    //ç³»ç»Ÿè®¾ç½®
+    Route::match(['get','post'],'list', 'ReportController@alist');
+
+    //ï¿½Ş¸ï¿½ï¿½ï¿½ï¿½ï¿½
     Route::get('pass', 'PassController@index');
 });

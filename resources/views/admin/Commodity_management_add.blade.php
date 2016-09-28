@@ -277,7 +277,8 @@
                 <div class="uploader_img">
                     <div class="img_fileupload">
 
-                        <img src="@if($data){{$data[0]->lb_img[2] or asset('resources/views/admin/img/upload.png')}}@endif" class="tp1 lb_img" class="tp1" alt="">
+                        <img src="@if($data){{$data[0]->lb_img[2] or asset('resources/views/admin/img/upload.png')}}@endif"
+                             class="tp1 lb_img" class="tp1" alt="">
 
                         <div class="img_del_div2 img_div">
                             <a onclick="del($(this))">
@@ -292,7 +293,8 @@
             <li>
                 <div class="uploader_img">
                     <div class="img_fileupload">
-                        <img src="@if($data){{$data[0]->lb_img[3] or asset('resources/views/admin/img/upload.png')}}@endif" class="tp1 lb_img" class="tp1" alt="">
+                        <img src="@if($data){{$data[0]->lb_img[3] or asset('resources/views/admin/img/upload.png')}}@endif"
+                             class="tp1 lb_img" class="tp1" alt="">
 
                         <div class="img_del_div2 img_div">
                             <a onclick="del($(this))">
@@ -307,7 +309,8 @@
             <li>
                 <div class="uploader_img">
                     <div class="img_fileupload">
-                        <img src="@if($data){{$data[0]->lb_img[4] or asset('resources/views/admin/img/upload.png')}}@endif" class="tp1 lb_img" class="tp1" alt="">
+                        <img src="@if($data){{$data[0]->lb_img[4] or asset('resources/views/admin/img/upload.png')}}@endif"
+                             class="tp1 lb_img" class="tp1" alt="">
 
                         <div class="img_del_div2 img_div">
                             <a onclick="del($(this))">
@@ -322,7 +325,8 @@
             <li>
                 <div class="uploader_img">
                     <div class="img_fileupload">
-                        <img src="@if($data){{$data[0]->lb_img[5] or asset('resources/views/admin/img/upload.png')}}@endif" class="tp1 lb_img" class="tp1" alt="">
+                        <img src="@if($data){{$data[0]->lb_img[5] or asset('resources/views/admin/img/upload.png')}}@endif"
+                             class="tp1 lb_img" class="tp1" alt="">
 
                         <div class="img_del_div2 img_div">
                             <a onclick="del($(this))">
@@ -365,7 +369,7 @@
     <div class="main_end_div">
 
         <a>
-            <div class="main_main_end_no main_main_end_btn" onclick="gb()">
+            <div class="main_main_end_no main_main_end_btn" onclick="history.go(-1)">
                 返回
             </div>
         </a>

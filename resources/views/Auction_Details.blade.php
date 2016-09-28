@@ -261,62 +261,30 @@
 </head>
 <body>
 <div class="main_div">
+    <input type="hidden" name="coll_id" value="{{$data->coll_id}}">
+
     <div class="swiper-container" id="head_swiper">
         <div class="swiper-wrapper">
-            @if(!empty($xq->carousel1))
+            @foreach($data->sources as $v)
                 <div class="swiper-slide img1" id="d1">
-                    <img src="{{asset("$xq->carousel1")}}" id="lb1">
+                    <img src="{{$v}}" id="lb1">
                 </div>
-            @endif
-            @if(!empty($xq->carousel2))
-
-                <div class="swiper-slide img2" id="d2">
-                    <img src="{{asset("$xq->carousel2")}}" id="lb2">
-                </div>
-            @endif
-            @if(!empty($xq->carousel3))
-
-                <div class="swiper-slide img3" id="d3">
-                    <img src="{{asset("$xq->carousel3")}}" id="lb3">
-                </div>
-            @endif
-            @if(!empty($xq->carousel4))
-
-                <div class="swiper-slide img4" id="d4">
-                    <img src="{{asset("$xq->carousel4")}}" id="lb4">
-                </div>
-            @endif
-
-            @if(!empty($xq->carousel5))
-
-                <div class="swiper-slide img5" id="d5">
-                    <img src="{{asset("$xq->carousel5")}}" id="lb5">
-                </div>
-            @endif
-
-            @if(!empty($xq->carousel6))
-
-                <div class="swiper-slide img6" id="d6">
-                    <img src="{{asset("$xq->carousel6")}}" id="1b6">
-                </div>
-            @endif
-
+            @endforeach
         </div>
         <div class="swiper-pagination"></div>
         <div class="top_time_div">
             <img class="top_time_img" src="{{asset('resources/views/style/img/daojishi.png')}}"/>
-            <span class="top_time_text zz f">正在进行</span>
-            <span class="top_time_text f">今天</span>
-            <span class="top_time_text_time f">22:00</span>
+            <span class="top_time_text zz f">@if($tag===true){{'正在进行'}}@else{{'活动已结束'}}@endif</span>
+            <span class="top_time_text_time f">{{$endTime->end_time}}</span>
             <span class="top_time_text f">结束</span>
         </div>
     </div>
     <div class="main_title_div">
         <div class="main_title">
-            {{$xq->name}}
+            {{$data->name}}
         </div>
         <div class="main_sc" onclick="sc()">
-            <img src="{{asset('resources/views/style/img/weishoucang.png')}}" class="main_sc_img"/>
+            <img src="@if($focus === 0){{asset('resources/views/style/img/yishoucang.png')}}@else{{asset('resources/views/style/img/weishoucang.png')}}@endif" class="main_sc_img"/>
             <br/>
             收藏
         </div>
@@ -337,6 +305,9 @@
 
         <div class="hr_text">继续拖动查看商品详情</div>
         <hr/>
+        <div>
+            <p>{!! unserialize($data->content) !!}</p>
+        </div>
     </div>
 
 
@@ -368,6 +339,8 @@
 <script type="text/javascript" src="{{asset('resources/views/style/js/jquery.js')}}"></script>
 <script type="text/javascript" src="{{asset('resources/views/style/js/calrem.js')}}"></script>
 <script type="text/javascript" src="{{asset('resources/views/style/js/swiper.min.js')}}"></script>
+<script src="{{asset('resources/org/layer/layer.js')}}"></script>
+
 <script>
     var xrc1 = $("#lb1").attr("src");
     var xrc2 = $("#lb2").attr("src");
@@ -413,18 +386,107 @@
         alert("分享");
     }
     function cy() {
+        @if($tag === false)
+        alert('活动已结束d');
+        return;
+        @else
         alert("参与报价");
+        @endif
+
+
     }
 
+    //收藏
     function sc() {
-
-        var src = $(".main_sc_img")[0].src;
+        var src = $(".main_sc_img")[0].src, tag,data={},coll_id;
         if (src.indexOf("wei") != -1) {
-            $(".main_sc_img").attr('src', "{{asset('resources/views/style/img/yishoucang.png')}}");
+            tag = 0;
+
         } else {
-            $(".main_sc_img").attr('src', "{{asset('resources/views/style/img/weishoucang.png')}}");
+            tag = 1;
+        }
+        data.coll_id = $('input[name=coll_id]').val();
+        data._token = '{{csrf_token()}}';
+        data.focus = tag;
+
+        //ajax提交
+        $.ajax({
+            type: 'POST',
+            dataType: 'JSON',
+            data: data,
+            url: '{{url("collect")}}',
+            beforeSend: function () {
+                layer.load(1);
+                return;
+            },
+            success: function (msg) {
+                switch(msg.status){
+                    case 0:
+                        $(".main_sc_img").attr('src', "{{asset('resources/views/style/img/yishoucang.png')}}");
+                                           location.reload();
+                        break;
+                    case 1:
+                        $(".main_sc_img").attr('src', "{{asset('resources/views/style/img/weishoucang.png')}}");
+                        break;
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                layer.alert('网络故障!', {'icon': 5});
+                return;
+            }
+        });
+    }
+    //返回角度
+    function GetSlideAngle(dx, dy) {
+        return Math.atan2(dy, dx) * 180 / Math.PI;
+    }
+
+    //根据起点和终点返回方向 1：向上，2：向下，3：向左，4：向右,0：未滑动
+    function GetSlideDirection(startX, startY, endX, endY) {
+        var dy = startY - endY;
+        var dx = endX - startX;
+        var result = 0;
+
+        //如果滑动距离太短
+        if (Math.abs(dx) < 2 && Math.abs(dy) < 2) {
+            return result;
         }
 
+        var angle = GetSlideAngle(dx, dy);
+        if (angle >= -45 && angle < 45) {
+            result = 4;
+        } else if (angle >= 45 && angle < 135) {
+            result = 1;
+        } else if (angle >= -135 && angle < -45) {
+            result = 2;
+        }
+        else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
+            result = 3;
+        }
+
+        return result;
     }
+
+
+    var a = 0;
+
+    //滑动处理
+    var startX, startY;
+    document.addEventListener('touchstart', function (ev) {
+        startX = ev.touches[0].pageX;
+        startY = ev.touches[0].pageY;
+    }, false);
+    document.addEventListener('touchend', function (ev) {
+        var endX, endY;
+        endX = ev.changedTouches[0].pageX;
+        endY = ev.changedTouches[0].pageY;
+        var direction = GetSlideDirection(startX, startY, endX, endY);
+        switch (direction) {
+            case 1:
+                alert(1);
+                break;
+            default:
+        }
+    }, false);
 </script>
 </html>

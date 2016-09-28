@@ -18,10 +18,12 @@ class ReportController extends Controller
 {
     public function index()
     {
-        $data = Moxing::all();
+        $data = DB::table('collection')
+            ->join('sources', 'collection.coll_id', '=', 'sources.cid')
+            ->select('collection.*', 'sources.content')
+            ->get();
         return view('admin/Commodity_management', compact('data'));
     }
-
 
     public function update($id)
     {
@@ -88,5 +90,47 @@ class ReportController extends Controller
         $data = null;
         $tag = null;
         return view('admin/Commodity_management_add', compact('data', 'tag'));
+    }
+
+    public function delete(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $input = $request->except('_token');
+            DB::beginTransaction();
+            if (DB::table('collection')->where('coll_id', '=', $input['coll_id'])->delete()) {
+                if (DB::table('sources')->where('cid', '=', $input['coll_id'])->delete()) {
+                    DB::commit();
+                    return Response::json(['status' => 0, 'msg' => '删除成功!']);
+                }
+                DB::rollBack();
+                return Response::json(['status' => 1, 'msg' => '删除失败!']);
+            }
+        }
+    }
+
+    public function alist(Request $request)
+    {
+        $table = DB::table('config');
+
+        if ($request->isMethod('get')) {
+            $data = $table->select('start_time', 'end_time', 'overtop_price', 'img')->first();
+            if ($data) {
+                $data->img = explode('#', substr(unserialize($data->img), 0, -1));
+            }
+            return view('admin/list', compact('data'));
+        }
+        if ($request->isMethod('post')) {
+            $input = $request->except('_token');
+            $input['img'] = serialize($input['img']);
+            $input['overtop_price'] = intval($input['overtop_price']);
+
+            if (!$table->select('create_time')->get()) {
+                $input['create_time'] = time();
+                return Response::json($table->insert($input) ? ['status' => 0, 'msg' => '保存成功!'] : ['status' => 1, 'msg' => '保存失败!']);
+            } else {
+                $input['update_time'] = time();
+                return Response::json($table->update($input) ? ['status' => 0, 'msg' => '修改成功!'] : ['status' => 1, 'msg' => '修改失败!']);
+            };
+        }
     }
 }
